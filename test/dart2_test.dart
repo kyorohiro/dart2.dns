@@ -1,4 +1,4 @@
-import 'package:dart2/dart2.dart';
+import 'package:dart2.dns/dns.dart';
 import 'package:test/test.dart';
 
 void main() {
