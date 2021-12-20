@@ -1,8 +1,5 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
 library dart2;
 
-export 'src/dart2_base.dart';
+export 'src/buffer.dart';
 
 // TODO: Export any libraries intended for clients of this package.
