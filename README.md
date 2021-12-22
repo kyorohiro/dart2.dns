@@ -1,22 +1,18 @@
-A library for Dart developers.
+Hello DNS Query
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+# DNS HEADER
+```
+ID:16bit,
+QR:1bit, OPCODE:4bit, AA:1bit, TC:1bit, RD:1bit,
+RA:1bit, Z:3bit, RCODE: 4bit
 
-## Usage
-
-A simple usage example:
-
-```dart
-import 'package:dart2/dart2.dart';
-
-main() {
-  var awesome = new Awesome();
-}
 ```
 
-## Features and bugs
 
-Please file feature requests and bugs at the [issue tracker][tracker].
+# REF
+- DNS Queries over HTTPS (DoH) 
+https://datatracker.ietf.org/doc/html/rfc8484
 
-[tracker]: http://example.com/issues/replaceme
+- DOMAIN NAMES - IMPLEMENTATION AND SPECIFICATION 
+https://datatracker.ietf.org/doc/html/rfc1035
+

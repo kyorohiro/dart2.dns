@@ -5,7 +5,12 @@ class Buffer {
   Uint8List get raw => _buffer;
 
   Buffer(int length) {
-    _buffer = new Uint8List(length);
+    _buffer = Uint8List(length);
+
+    // ZERO CLEAR
+    for (var i = 0; i < length; i++) {
+      _buffer[i] = 0;
+    }
   }
 
   void setInt16AtBigEndian(int index, int value) {
