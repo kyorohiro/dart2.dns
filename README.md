@@ -1,6 +1,16 @@
 Hello DNS Query
 
-# DNS HEADER
+# QUERY FORMAT
+
+```
+HEADER
+QUESTION
+ANSWER
+AUTHORITY
+ADDITIONAL
+```
+
+# HEADER
 ```
 ID:16bit,
 QR:1bit, OPCODE:4bit, AA:1bit, TC:1bit, RD:1bit,
@@ -9,6 +19,11 @@ QDCOUNT:16bit,
 ANCOUNT:16bit,
 NSCOUNT:16bit,
 ARCOUNT:16bit
+```
+
+# QUESTION
+```
+
 ```
 
 ### CLIENT REQUEST
