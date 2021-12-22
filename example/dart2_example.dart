@@ -69,7 +69,7 @@ class DNS {
     // ANCOUNT: 16bit
     // NSCOUNT: 16bit
     // ARCOUNT: 16bit
-    int qdcount = 0;
+    int qdcount = 1;
     int ancount = 0;
     int nscount = 0;
     int arcount = 0;
