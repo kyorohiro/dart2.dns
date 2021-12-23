@@ -66,25 +66,36 @@ class DNS {
     if (length > srcBuffer.length) {
       length = srcBuffer.length;
     }
-    var i = 0;
+    var i = index;
 
     for (i = 0; i < length;) {
       var nameLength = srcBuffer[i];
+
       if (nameLength == 0) {
+        // if Null(0) is TEXT END
         i++;
         break;
-      }
-      if (i + 1 + nameLength > length) {
+      } else if ((0xC0 & nameLength) == 0xC0) {
+        // compression
+        var v = (0x3f & nameLength);
+        var r = _qnameToUrl(srcBuffer, v, length);
+        if (i != 0) {
+          outBuffer.write('.');
+        }
+        outBuffer.write(r.item1);
+        i++;
+        break;
+      } else if (i + 1 + nameLength > length) {
         // anything wrong , return empty string
         throw Exception('>>Wrong i+nameLength > length := ${i + nameLength} > $length');
+      } else {
+        var nameBytes = srcBuffer.sublist(i + 1, i + 1 + nameLength);
+        if (i != 0) {
+          outBuffer.write('.');
+        }
+        outBuffer.write(ascii.decode(nameBytes, allowInvalid: true));
+        i = i + 1 + nameLength;
       }
-
-      var nameBytes = srcBuffer.sublist(i + 1, i + 1 + nameLength);
-      if (i != 0) {
-        outBuffer.write('.');
-      }
-      outBuffer.write(ascii.decode(nameBytes, allowInvalid: true));
-      i = i + 1 + nameLength;
     }
     return Tuple2<String, int>(outBuffer.toString(), i);
   }
