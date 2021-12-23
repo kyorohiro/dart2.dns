@@ -3,6 +3,7 @@ library dart2;
 import 'dart:convert' show ascii;
 import 'package:dart2.dns/dns.dart';
 import 'dart:typed_data' show Uint8List;
+import 'package:tuple/tuple.dart' show Tuple2;
 export 'src/buffer.dart';
 
 class DNS {
@@ -44,6 +45,38 @@ class DNS {
     tmpToBuffer();
     buffer.add(0);
     return Uint8List.fromList(buffer);
+  }
+
+  ///
+  ///
+  /// ret
+  ///   string item is url
+  ///   int item is url length with null(0)
+  static Tuple2<String, int> qnameToUrl(Uint8List srcBuffer, int length) {
+    var outBuffer = StringBuffer();
+    if (length > srcBuffer.length) {
+      length = srcBuffer.length;
+    }
+    var i = 0;
+    for (i = 0; i < length;) {
+      var nameLength = srcBuffer[i];
+      if (nameLength == 0) {
+        i++;
+        break;
+      }
+      if (i + 1 + nameLength > length) {
+        // anything wrong , return empty string
+        throw Exception('>>Wrong i+nameLength > length := ${i + nameLength} > $length');
+      }
+
+      var nameBytes = srcBuffer.sublist(i + 1, i + 1 + nameLength);
+      if (i != 0) {
+        outBuffer.write('.');
+      }
+      outBuffer.write(ascii.decode(nameBytes, allowInvalid: true));
+      i = i + 1 + nameLength;
+    }
+    return Tuple2<String, int>(outBuffer.toString(), i);
   }
 
   Buffer generateAMessage(String host) {
