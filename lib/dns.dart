@@ -52,8 +52,8 @@ class DNS {
   /// ret
   ///   string item is url
   ///   int item is next index
-  static Tuple2<String, int> qnameToUrl(Uint8List srcBuffer, int length) {
-    return _qnameToUrl(srcBuffer, 0, length);
+  static Tuple2<String, int> qnameToUrl(Uint8List srcBuffer, int length, [int index = 0]) {
+    return _qnameToUrl(srcBuffer, index, length);
   }
 
   ///
@@ -68,7 +68,7 @@ class DNS {
     }
     var i = index;
 
-    for (i = 0; i < length;) {
+    for (; i < length;) {
       var nameLength = srcBuffer[i];
 
       if (nameLength == 0) {
@@ -79,7 +79,7 @@ class DNS {
         // compression
         var v = (0x3f & nameLength);
         var r = _qnameToUrl(srcBuffer, v, length);
-        if (i != 0) {
+        if (outBuffer.length > 0) {
           outBuffer.write('.');
         }
         outBuffer.write(r.item1);
@@ -90,7 +90,7 @@ class DNS {
         throw Exception('>>Wrong i+nameLength > length := ${i + nameLength} > $length');
       } else {
         var nameBytes = srcBuffer.sublist(i + 1, i + 1 + nameLength);
-        if (i != 0) {
+        if (outBuffer.length > 0) {
           outBuffer.write('.');
         }
         outBuffer.write(ascii.decode(nameBytes, allowInvalid: true));
