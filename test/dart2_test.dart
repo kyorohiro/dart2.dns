@@ -18,7 +18,7 @@ void main() {
       var exp = 'github.com';
       var out = DNS.qnameToUrl(Uint8List.fromList(src), 0, src.length);
       expect(out.item1, exp);
-      expect(out.item2, src.length);
+      expect(out.item2, src.length - 1);
     });
 
     test('DNS.qnameToUrl with compression', () {
