@@ -51,13 +51,23 @@ class DNS {
   ///
   /// ret
   ///   string item is url
-  ///   int item is url length with null(0)
+  ///   int item is next index
   static Tuple2<String, int> qnameToUrl(Uint8List srcBuffer, int length) {
+    return _qnameToUrl(srcBuffer, 0, length);
+  }
+
+  ///
+  ///
+  /// ret
+  ///   string item is url
+  ///   int item is next index
+  static Tuple2<String, int> _qnameToUrl(Uint8List srcBuffer, int index, int length) {
     var outBuffer = StringBuffer();
     if (length > srcBuffer.length) {
       length = srcBuffer.length;
     }
     var i = 0;
+
     for (i = 0; i < length;) {
       var nameLength = srcBuffer[i];
       if (nameLength == 0) {
