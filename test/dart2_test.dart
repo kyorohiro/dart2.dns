@@ -37,5 +37,13 @@ void main() {
         expect(out.item2, src.length);
       }
     });
+
+    test('DNS.namesToUrls', () {
+      var src = [6, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 3, 0x63, 0x6f, 0x6d, 0x00, 6, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 3, 0x63, 0x6f, 0x6d, 0x00];
+      var exp = ['github.com', 'github.com'];
+      var out = DNS.qnamesToUrls(Uint8List.fromList(src), src.length, 2);
+      expect(out.item1, exp);
+      expect(out.item2, src.length);
+    });
   });
 }

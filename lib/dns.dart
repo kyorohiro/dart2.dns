@@ -95,6 +95,8 @@ class DNS {
     int index = 0;
     List<String> qnames = [];
     for (var c = 0; c < count; c++) {
+      print("-----");
+      print("-${index}");
       var r = qnameToUrl(srcBuffer, index, length);
       qnames.add(r.item1);
       index = r.item2;
