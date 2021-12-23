@@ -91,10 +91,15 @@ class DNS {
     return Tuple2<String, int>(outBuffer.toString(), i);
   }
 
-  static Tuple2<String, int> qnamesToUrls(Uint8List srcBuffer, int length, int count) {
+  static Tuple2<List<String>, int> qnamesToUrls(Uint8List srcBuffer, int length, int count) {
+    int index = 0;
+    List<String> qnames = [];
     for (var c = 0; c < count; c++) {
-      qnameToUrl(srcBuffer, 0, length);
+      var r = qnameToUrl(srcBuffer, index, length);
+      qnames.add(r.item1);
+      index = r.item2;
     }
+    return Tuple2<List<String>, int>(qnames, index);
   }
 
   Buffer generateAMessage(String host) {
