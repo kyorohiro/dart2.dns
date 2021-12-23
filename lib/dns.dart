@@ -52,16 +52,7 @@ class DNS {
   /// ret
   ///   string item is url
   ///   int item is next index
-  static Tuple2<String, int> qnameToUrl(Uint8List srcBuffer, int length, [int index = 0]) {
-    return _qnameToUrl(srcBuffer, index, length);
-  }
-
-  ///
-  ///
-  /// ret
-  ///   string item is url
-  ///   int item is next index
-  static Tuple2<String, int> _qnameToUrl(Uint8List srcBuffer, int index, int length) {
+  static Tuple2<String, int> qnameToUrl(Uint8List srcBuffer, int index, int length) {
     var outBuffer = StringBuffer();
     if (length > srcBuffer.length) {
       length = srcBuffer.length;
@@ -78,7 +69,7 @@ class DNS {
       } else if ((0xC0 & nameLength) == 0xC0) {
         // compression
         var v = (0x3f & nameLength);
-        var r = _qnameToUrl(srcBuffer, v, length);
+        var r = qnameToUrl(srcBuffer, v, length);
         if (outBuffer.length > 0) {
           outBuffer.write('.');
         }
@@ -98,6 +89,12 @@ class DNS {
       }
     }
     return Tuple2<String, int>(outBuffer.toString(), i);
+  }
+
+  static Tuple2<String, int> qnamesToUrls(Uint8List srcBuffer, int length, int count) {
+    for (var c = 0; c < count; c++) {
+      qnameToUrl(srcBuffer, 0, length);
+    }
   }
 
   Buffer generateAMessage(String host) {

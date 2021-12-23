@@ -16,7 +16,7 @@ void main() {
     test('DNS.qnameToUrl', () {
       var src = [6, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 3, 0x63, 0x6f, 0x6d, 0x00];
       var exp = 'github.com';
-      var out = DNS.qnameToUrl(Uint8List.fromList(src), src.length);
+      var out = DNS.qnameToUrl(Uint8List.fromList(src), 0, src.length);
       expect(out.item1, exp);
       expect(out.item2, src.length);
     });
@@ -25,14 +25,14 @@ void main() {
       {
         var src = [6, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 3, 0x63, 0x6f, 0x6d, 0x00, 0xC7];
         var exp = 'com';
-        var out = DNS.qnameToUrl(Uint8List.fromList(src), src.length, 12);
+        var out = DNS.qnameToUrl(Uint8List.fromList(src), 12, src.length);
         expect(out.item1, exp);
         expect(out.item2, src.length);
       }
       {
         var src = [6, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 3, 0x63, 0x6f, 0x6d, 0x00, 6, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 3, 0x63, 0x6f, 0x6d, 0xC7];
         var exp = 'github.com.com';
-        var out = DNS.qnameToUrl(Uint8List.fromList(src), src.length, 12);
+        var out = DNS.qnameToUrl(Uint8List.fromList(src), 12, src.length);
         expect(out.item1, exp);
         expect(out.item2, src.length);
       }
