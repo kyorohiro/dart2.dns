@@ -1,6 +1,7 @@
 import 'dart:typed_data' show Buffer;
-
+import 'dart:convert' show ascii;
 import 'package:dart2.dns/dns.dart';
+import 'dart:typed_data' show Uint8List;
 
 class DNS {
   static final int OPCODE_QUERY = 0;
@@ -13,6 +14,26 @@ class DNS {
   static final int RCODE_NAME_ERROR = 3;
   static final int RCODE_NOT_IMPLEMENTED = 4;
   static final int RCODE_REFUSED = 5;
+
+  static Uint8List urlToQName(String url) {
+    var urlBytes = ascii.encode(url);
+    var buffer = List<int>.empty();
+    var tmp = List<int>.empty();
+    var i = 0;
+    urlBytes.forEach((c) {
+      if (0x2E == c) {
+        buffer.add(i);
+        buffer.addAll(tmp.sublist(0, i));
+        i = 0;
+        tmp.clear();
+        return;
+      } else {
+        tmp.add(c);
+        i++;
+      }
+    });
+    return Uint8List.fromList(buffer);
+  }
 
   Buffer generateAMessage(String host) {
     Buffer buffer = new Buffer(54);
