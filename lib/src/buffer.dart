@@ -57,6 +57,10 @@ class Buffer {
     _buffer[index + 1] = (value >> 0) & 0xFF;
   }
 
+  int getByteFromBigEndian(int index) {
+    return _buffer[index] & 0xFF;
+  }
+
   void setByteAtBigEndian(int index, int value) {
     _buffer[index] = (value << 0) & 0xFF;
   }

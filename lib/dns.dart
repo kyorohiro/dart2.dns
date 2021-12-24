@@ -30,7 +30,33 @@ class DNSHeader {
     return DNSHeader.encode(this);
   }
 
-  static DNSHeader decode(Buffer buffer) {}
+  static DNSHeader decode(Buffer buffer) {
+    var header = DNSHeader();
+    header.id = buffer.getInt16FromBigEndian(0);
+    {
+      var tmp = buffer.getByteFromBigEndian(2);
+      header.qr = (tmp >> 7) & 0x01;
+      header.opcode = (tmp >> 3) & 0x0F;
+      header.aa = ((tmp >> 2) & 0x01) == 1;
+      header.tc = ((tmp >> 1) & 0x01) == 1;
+      header.rd = ((tmp >> 0) & 0x01) == 1;
+    }
+    {
+      var tmp = buffer.getByteFromBigEndian(3);
+      header.ra = ((tmp >> 7) & 0x01) == 1;
+      header.z = (tmp >> 4) & 0x07;
+      header.rcode = (tmp >> 0) & 0x0F;
+    }
+
+    {
+      header.qdcount = buffer.getInt16FromBigEndian(4);
+      header.ancount = buffer.getInt16FromBigEndian(6);
+      header.nscount = buffer.getInt16FromBigEndian(8);
+      header.arcount = buffer.getInt16FromBigEndian(10);
+    }
+    return header;
+  }
+
   static Buffer encode(DNSHeader header) {
     var buffer = Buffer(12);
 
