@@ -6,6 +6,10 @@ class Buffer {
 
   static final List<String> vv = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
+  Buffer.fromList(List<int> buffer) {
+    Uint8List.fromList(buffer);
+  }
+
   Buffer(int length) {
     _buffer = Uint8List(length);
 
@@ -29,6 +33,10 @@ class Buffer {
     _buffer[index + 1] = (value << 16) & 0xFF;
     _buffer[index + 2] = (value << 8) & 0xFF;
     _buffer[index + 3] = (value << 0) & 0xFF;
+  }
+
+  void setBytes(int index, List<int> bytes) {
+    _buffer.setRange(index, index + bytes.length, bytes);
   }
 
   printAtHex() {

@@ -78,6 +78,117 @@ class DNSHeader {
   }
 }
 
+///
+///
+/// QCLASS: 16bit
+class DNSQuestion {
+  String url = 'github.com'; // QNAME: X bit
+  int qType = DNS.QTYPE_A; // QTYPE: 16bit
+  int qClass = DNS.QCLASS_IN; // QCLASS: 16bit
+
+  Buffer generateBuffer() {
+    return DNSQuestion.encode(this);
+  }
+
+  static Buffer encode(DNSQuestion q) {
+    var qnameBuffer = DNSName.urlToQname(q.url);
+    var buffer = Buffer(qnameBuffer.length + 2 + 2);
+    buffer.setBytes(0, qnameBuffer);
+    buffer.setInt16AtBigEndian(qnameBuffer.length, q.qType);
+    buffer.setInt16AtBigEndian(qnameBuffer.length + 2, q.qClass);
+    return buffer;
+  }
+}
+
+class DNSName {
+  static Uint8List urlToQname(String url) {
+    var urlBytes = ascii.encode(url);
+    var buffer = List<int>.empty(growable: true);
+    var tmp = List<int>.empty(growable: true);
+    var tmpIndex = 0;
+    //urlBytes.forEach((c)
+    var tmpToBuffer = () {
+      if (tmp.isNotEmpty) {
+        buffer.add(tmpIndex);
+        buffer.addAll(tmp.sublist(0, tmpIndex));
+        tmpIndex = 0;
+        tmp.clear();
+      }
+    };
+    for (var i = 0; i < urlBytes.length; i++) {
+      var c = urlBytes[i];
+      if (0x2E == c) {
+        tmpToBuffer();
+        continue;
+      } else {
+        tmp.add(c);
+        tmpIndex++;
+      }
+    }
+    tmpToBuffer();
+    buffer.add(0);
+    return Uint8List.fromList(buffer);
+  }
+
+  ///
+  ///
+  /// ret
+  ///   string item is url
+  ///   int item is next index without Null(0)
+  static Tuple2<String, int> qnameToUrl(Uint8List srcBuffer, int index, int length) {
+    var outBuffer = StringBuffer();
+    if (length > srcBuffer.length) {
+      length = srcBuffer.length;
+    }
+    var i = index;
+
+    for (; i < length;) {
+      var nameLength = srcBuffer[i];
+
+      if (nameLength == 0) {
+        // if Null(0) is TEXT END
+        // i++;
+        break;
+      } else if ((0xC0 & nameLength) == 0xC0) {
+        // compression
+        var v = (0x3f & nameLength);
+        var r = qnameToUrl(srcBuffer, v, length);
+        if (outBuffer.length > 0) {
+          outBuffer.write('.');
+        }
+        outBuffer.write(r.item1);
+        i++;
+        break;
+      } else if (i + 1 + nameLength > length) {
+        // anything wrong , return empty string
+        throw Exception('>>Wrong i+nameLength > length := ${i + nameLength} > $length');
+      } else {
+        var nameBytes = srcBuffer.sublist(i + 1, i + 1 + nameLength);
+        if (outBuffer.length > 0) {
+          outBuffer.write('.');
+        }
+        outBuffer.write(ascii.decode(nameBytes, allowInvalid: true));
+        i = i + 1 + nameLength;
+      }
+    }
+    return Tuple2<String, int>(outBuffer.toString(), i);
+  }
+
+  static Tuple2<List<String>, int> qnamesToUrls(Uint8List srcBuffer, int length, int count) {
+    int index = 0;
+    List<String> qnames = [];
+    for (var c = 0; c < count; c++) {
+      var r = qnameToUrl(srcBuffer, index, length);
+      qnames.add(r.item1);
+      index = r.item2;
+      if (srcBuffer[index] == 0x00) {
+        index++;
+      }
+    }
+    return Tuple2<List<String>, int>(qnames, index);
+  }
+}
+
 class DNS {
   static final int OPCODE_QUERY = 0;
   static final int OPCPDE_IQUERY = 1;
@@ -106,6 +217,11 @@ class DNS {
   static final int QTYPE_MINFO = 14; // mailbox or mail list information
   static final int QTYPE_MX = 15; // mail exchange
   static final int QTYPE_TXT = 16; // text strings
+
+  static final int QCLASS_IN = 1; // the Internet
+  static final int QCLASS_CS = 2; // the CSNET class (Obsolete - used only for examples in some obsolete RFCs)
+  static final int QCLASS_CH = 3; // the CHAOS class
+  static final int QCLASS_HS = 4; // Hesiod [Dyer 87]
 
   static Uint8List urlToQname(String url) {
     var urlBytes = ascii.encode(url);
