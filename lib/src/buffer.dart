@@ -61,6 +61,21 @@ class Buffer {
     _buffer[index] = (value << 0) & 0xFF;
   }
 
+  int getInt32FromBigEndian(int index) {
+    var value = 0;
+    var v4 = _buffer[index + 0];
+    var v3 = _buffer[index + 1];
+    var v2 = _buffer[index + 2];
+    var v1 = _buffer[index + 3];
+
+    value |= (v1 & 0xFF);
+    value |= ((v2 << 8) & 0xFF00);
+    value |= ((v3 << 16) & 0xFF0000);
+    value |= ((v4 << 24) & 0xFF000000);
+
+    return value;
+  }
+
   void setInt32AtBigEndian(int index, int value) {
     _buffer[index + 0] = (value >> 24) & 0xFF;
     _buffer[index + 1] = (value >> 16) & 0xFF;
