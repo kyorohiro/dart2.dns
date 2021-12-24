@@ -6,6 +6,20 @@ class Buffer {
 
   static final List<String> vv = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
+  static Buffer combine(List<Buffer> buffers) {
+    var length = 0;
+    buffers.forEach((b) {
+      length += b.raw.length;
+    });
+    var buffer = Buffer(length);
+    var index = 0;
+    buffers.forEach((b) {
+      buffer.setBytes(index, b.raw);
+      index += b.raw.length;
+    });
+    return buffer;
+  }
+
   Buffer.fromList(List<int> buffer) {
     Uint8List.fromList(buffer);
   }

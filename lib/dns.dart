@@ -82,7 +82,7 @@ class DNSHeader {
 ///
 /// QCLASS: 16bit
 class DNSQuestion {
-  String url = 'github.com'; // QNAME: X bit
+  String hostOrIP = 'github.com'; // QNAME: X bit
   int qType = DNS.QTYPE_A; // QTYPE: 16bit
   int qClass = DNS.QCLASS_IN; // QCLASS: 16bit
 
@@ -91,7 +91,7 @@ class DNSQuestion {
   }
 
   static Buffer encode(DNSQuestion q) {
-    var qnameBuffer = DNSName.urlToQname(q.url);
+    var qnameBuffer = DNSName.urlToQname(q.hostOrIP);
     var buffer = Buffer(qnameBuffer.length + 2 + 2);
     buffer.setBytes(0, qnameBuffer);
     buffer.setInt16AtBigEndian(qnameBuffer.length, q.qType);
@@ -223,162 +223,9 @@ class DNS {
   static final int QCLASS_CH = 3; // the CHAOS class
   static final int QCLASS_HS = 4; // Hesiod [Dyer 87]
 
-  static Uint8List urlToQname(String url) {
-    var urlBytes = ascii.encode(url);
-    var buffer = List<int>.empty(growable: true);
-    var tmp = List<int>.empty(growable: true);
-    var tmpIndex = 0;
-    //urlBytes.forEach((c)
-    var tmpToBuffer = () {
-      if (tmp.isNotEmpty) {
-        buffer.add(tmpIndex);
-        buffer.addAll(tmp.sublist(0, tmpIndex));
-        tmpIndex = 0;
-        tmp.clear();
-      }
-    };
-    for (var i = 0; i < urlBytes.length; i++) {
-      var c = urlBytes[i];
-      if (0x2E == c) {
-        tmpToBuffer();
-        continue;
-      } else {
-        tmp.add(c);
-        tmpIndex++;
-      }
-    }
-    tmpToBuffer();
-    buffer.add(0);
-    return Uint8List.fromList(buffer);
-  }
-
-  ///
-  ///
-  /// ret
-  ///   string item is url
-  ///   int item is next index without Null(0)
-  static Tuple2<String, int> qnameToUrl(Uint8List srcBuffer, int index, int length) {
-    var outBuffer = StringBuffer();
-    if (length > srcBuffer.length) {
-      length = srcBuffer.length;
-    }
-    var i = index;
-
-    for (; i < length;) {
-      var nameLength = srcBuffer[i];
-
-      if (nameLength == 0) {
-        // if Null(0) is TEXT END
-        // i++;
-        break;
-      } else if ((0xC0 & nameLength) == 0xC0) {
-        // compression
-        var v = (0x3f & nameLength);
-        var r = qnameToUrl(srcBuffer, v, length);
-        if (outBuffer.length > 0) {
-          outBuffer.write('.');
-        }
-        outBuffer.write(r.item1);
-        i++;
-        break;
-      } else if (i + 1 + nameLength > length) {
-        // anything wrong , return empty string
-        throw Exception('>>Wrong i+nameLength > length := ${i + nameLength} > $length');
-      } else {
-        var nameBytes = srcBuffer.sublist(i + 1, i + 1 + nameLength);
-        if (outBuffer.length > 0) {
-          outBuffer.write('.');
-        }
-        outBuffer.write(ascii.decode(nameBytes, allowInvalid: true));
-        i = i + 1 + nameLength;
-      }
-    }
-    return Tuple2<String, int>(outBuffer.toString(), i);
-  }
-
-  static Tuple2<List<String>, int> qnamesToUrls(Uint8List srcBuffer, int length, int count) {
-    int index = 0;
-    List<String> qnames = [];
-    for (var c = 0; c < count; c++) {
-      var r = qnameToUrl(srcBuffer, index, length);
-      qnames.add(r.item1);
-      index = r.item2;
-      if (srcBuffer[index] == 0x00) {
-        index++;
-      }
-    }
-    return Tuple2<List<String>, int>(qnames, index);
-  }
-
-  Buffer generateAMessage(String host) {
-    Buffer buffer = new Buffer(54);
-    // https://datatracker.ietf.org/doc/html/rfc1035
-    ///
-    /// HEADER
-    ///
-    {
-      // ID: 16bit
-      buffer.setInt16AtBigEndian(0, 123);
-    }
-    {
-      // QR: 1bit
-      // OPCODE: 4bit
-      // AA: 1bit
-      // TC: 1bit
-      // RD: 1bit
-      int qr = 0; // 1bit  query (0), or a response (1).
-      int opcode = DNS.OPCODE_QUERY;
-      bool aa = false;
-      bool tc = false;
-      bool rd = true;
-      int tmp = 0x00;
-      tmp |= (qr << 7) & 0xFF;
-      tmp |= (opcode << 3);
-      if (aa) {
-        tmp |= (0x01 << 2) & 0xFF;
-      }
-      if (tc) {
-        tmp |= (0x01 << 1) & 0xFF;
-      }
-      if (rd) {
-        tmp |= (0x01 << 0) & 0xFF;
-      }
-      buffer.setByteAtBigEndian(2, tmp);
-    }
-    {
-      // RA: 1bit
-      // Z: 3bit
-      // RCODE: 4bit
-      bool ra = false;
-      int z = 0;
-      int rcode = RCODE_NO_ERROR;
-      int tmp = 0x00;
-      if (ra) {
-        tmp |= (0x01 << 7) & 0xFF;
-      }
-      tmp |= (z << 4) & 0xFF;
-      tmp |= (rcode) & 0xFF;
-
-      buffer.setByteAtBigEndian(3, tmp);
-    }
-
-    // QDCOUNT: 16bit
-    // ANCOUNT: 16bit
-    // NSCOUNT: 16bit
-    // ARCOUNT: 16bit
-    int qdcount = 1;
-    int ancount = 0;
-    int nscount = 0;
-    int arcount = 0;
-    buffer.setInt16AtBigEndian(4, qdcount);
-    buffer.setInt16AtBigEndian(6, ancount);
-    buffer.setInt16AtBigEndian(8, nscount);
-    buffer.setInt16AtBigEndian(10, arcount);
-
-    ///
-    /// QUESTIONS
-    ///
-
-    return buffer;
+  Buffer generateAMessage(String host, [int id = 0x1234]) {
+    var headerBuffer = (DNSHeader()..id = id).generateBuffer();
+    var questionBuffer = (DNSQuestion()..hostOrIP = host).generateBuffer();
+    return Buffer.combine([headerBuffer, questionBuffer]);
   }
 }

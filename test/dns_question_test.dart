@@ -7,7 +7,7 @@ void main() {
     setUp(() {});
 
     test('DNSQuestion.encode()', () {
-      var buffer = DNSQuestion.encode(DNSQuestion()..url = 'github.com');
+      var buffer = DNSQuestion.encode(DNSQuestion()..hostOrIP = 'github.com');
       expect(buffer.toString(), '0667697468756203636f6d0000010001');
     });
   });
