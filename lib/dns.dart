@@ -95,8 +95,6 @@ class DNS {
     int index = 0;
     List<String> qnames = [];
     for (var c = 0; c < count; c++) {
-      print("-----");
-      print("-${index}");
       var r = qnameToUrl(srcBuffer, index, length);
       qnames.add(r.item1);
       index = r.item2;
@@ -110,8 +108,9 @@ class DNS {
   Buffer generateAMessage(String host) {
     Buffer buffer = new Buffer(54);
     // https://datatracker.ietf.org/doc/html/rfc1035
-    // DNS_HEADER
-    //
+    ///
+    /// HEADER
+    ///
     {
       // ID: 16bit
       buffer.setInt16AtBigEndian(0, 123);
@@ -170,6 +169,10 @@ class DNS {
     buffer.setInt16AtBigEndian(6, ancount);
     buffer.setInt16AtBigEndian(8, nscount);
     buffer.setInt16AtBigEndian(10, arcount);
+
+    ///
+    /// QUESTIONS
+    ///
 
     return buffer;
   }
