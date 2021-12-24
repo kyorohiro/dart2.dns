@@ -1,4 +1,5 @@
-import 'dart:typed_data';
+import 'dart:typed_data' show Uint8List;
+import 'dart:convert' show base64;
 
 class Buffer {
   Uint8List _buffer;
@@ -21,7 +22,7 @@ class Buffer {
   }
 
   Buffer.fromList(List<int> buffer) {
-    Uint8List.fromList(buffer);
+    _buffer = Uint8List.fromList(buffer);
   }
 
   Buffer(int length) {
@@ -66,5 +67,9 @@ class Buffer {
       b.write('${vv[v1]}${vv[v2]}');
     }
     return b.toString();
+  }
+
+  String toBase64() {
+    return base64.encode(_buffer);
   }
 }

@@ -60,7 +60,7 @@ CH              3 the CHAOS class
 HS              4 Hesiod [Dyer 87]
 ```
 
-### CLIENT REQUEST
+### CLIENT REQUEST SAMPLE
 
 ```
 ID:16bit // client generate id 
@@ -81,7 +81,26 @@ QTYPE: 16bit
 QCLASS: 16bit
 ```
 
+### SERVER RESPONSE SAMPLE
 
+```
+ID:16bit // client generate id 
+QR:1bit, // QUERY(0) 
+OPCODE:4bit // Standart Query(0)
+AA:1bit // 0 This Params is for Response
+TC:1bit // 0 This Params is for Response
+RD:1bit // Recursion Desired(1) 
+RA:1bit // 0 This Params is for Response
+Z:3bit // 0 Reseved params for furture 
+RCODE: 4bit // 0 This Params is for Response
+QDCOUNT:16bit // 1 or number of questions
+ANCOUNT:16bit //  0 This Params is for Response
+NSCOUNT:16bit //  0 This Params is for Response
+ARCOUNT:16bit //  0 This Params is for Response
+QNAME: X bit // 
+QTYPE: 16bit
+QCLASS: 16bit
+```
 
 # REF
 - DNS Queries over HTTPS (DoH) 
