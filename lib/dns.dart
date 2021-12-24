@@ -202,8 +202,8 @@ class DNSName {
   }
 
   static Tuple2<List<String>, int> qnamesToUrls(Uint8List srcBuffer, int length, int count) {
-    int index = 0;
-    List<String> qnames = [];
+    var index = 0;
+    var qnames = <String>[];
     for (var c = 0; c < count; c++) {
       var r = qnameToUrl(srcBuffer, index, length);
       qnames.add(r.item1);
