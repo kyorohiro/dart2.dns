@@ -87,10 +87,11 @@ class Buffer {
     _buffer.setRange(index, index + bytes.length, bytes);
   }
 
-  printAtHex() {
+  void printAtHex() {
     print(toString());
   }
 
+  @override
   String toString() {
     var b = StringBuffer();
     for (var i = 0; i < _buffer.length; i++) {
