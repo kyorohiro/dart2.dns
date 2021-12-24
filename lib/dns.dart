@@ -4,6 +4,7 @@ import 'dart:convert' show ascii;
 import 'package:dart2.dns/dns.dart';
 import 'dart:typed_data' show Uint8List;
 import 'package:tuple/tuple.dart' show Tuple2;
+import 'dart:math' show Random;
 export 'src/buffer.dart';
 
 ///
@@ -11,7 +12,8 @@ export 'src/buffer.dart';
 ///
 class DNSHeader {
   //
-  int qr = 0; // QR:  1bit  query (0), or a response (1).
+  int id = 0; // ID: 16bit if 0 generate RandomID
+  int qr = 0; // QR: 1bit  query (0), or a response (1).
   int opcode = DNS.OPCODE_QUERY; // OPCODE: 4bit
   bool aa = false; // AA: 1bit
   bool tc = false; // TC: 1bit
@@ -24,7 +26,11 @@ class DNSHeader {
   int nscount = 0; // NSCOUNT: 16bit
   int arcount = 0; // ARCOUNT: 16bit
 
-  Buffer generate() {
+  Buffer generateBuffer() {
+    return DNSHeader.encode(this);
+  }
+
+  static Buffer encode(DNSHeader header) {
     var buffer = Buffer(12);
 
     ///
@@ -32,38 +38,42 @@ class DNSHeader {
     ///
     {
       // ID: 16bit
-      buffer.setInt16AtBigEndian(0, 123);
+      var id = header.id;
+      if (id == 0) {
+        id = Random.secure().nextInt(0xFFFF);
+      }
+      buffer.setInt16AtBigEndian(0, id);
     }
     {
       var tmp = 0x00;
-      tmp |= (qr << 7) & 0xFF;
-      tmp |= (opcode << 3);
-      if (aa) {
+      tmp |= (header.qr << 7) & 0xFF;
+      tmp |= (header.opcode << 3);
+      if (header.aa) {
         tmp |= (0x01 << 2) & 0xFF;
       }
-      if (tc) {
+      if (header.tc) {
         tmp |= (0x01 << 1) & 0xFF;
       }
-      if (rd) {
+      if (header.rd) {
         tmp |= (0x01 << 0) & 0xFF;
       }
       buffer.setByteAtBigEndian(2, tmp);
     }
     {
       var tmp = 0x00;
-      if (ra) {
+      if (header.ra) {
         tmp |= (0x01 << 7) & 0xFF;
       }
-      tmp |= (z << 4) & 0xFF;
-      tmp |= (rcode) & 0xFF;
+      tmp |= (header.z << 4) & 0xFF;
+      tmp |= (header.rcode) & 0xFF;
 
       buffer.setByteAtBigEndian(3, tmp);
     }
 
-    buffer.setInt16AtBigEndian(4, qdcount);
-    buffer.setInt16AtBigEndian(6, ancount);
-    buffer.setInt16AtBigEndian(8, nscount);
-    buffer.setInt16AtBigEndian(10, arcount);
+    buffer.setInt16AtBigEndian(4, header.qdcount);
+    buffer.setInt16AtBigEndian(6, header.ancount);
+    buffer.setInt16AtBigEndian(8, header.nscount);
+    buffer.setInt16AtBigEndian(10, header.arcount);
     return buffer;
   }
 }

@@ -4,6 +4,8 @@ class Buffer {
   Uint8List _buffer;
   Uint8List get raw => _buffer;
 
+  static final List<String> vv = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+
   Buffer(int length) {
     _buffer = Uint8List(length);
 
@@ -29,15 +31,18 @@ class Buffer {
     _buffer[index + 3] = (value << 0) & 0xFF;
   }
 
-  printAtHex(int index, int length) {
-    StringBuffer b = new StringBuffer();
-    const List<String> vv = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
-    for (int i = index; i < length; i++) {
-      int v = _buffer[i];
-      int v1 = (v >> 4) & 0xF;
-      int v2 = v & 0xF;
+  printAtHex() {
+    print(toString());
+  }
+
+  String toString() {
+    var b = StringBuffer();
+    for (var i = 0; i < _buffer.length; i++) {
+      var v = _buffer[i];
+      var v1 = (v >> 4) & 0xF;
+      var v2 = v & 0xF;
       b.write('${vv[v1]}${vv[v2]}');
     }
-    print(b.toString());
+    return b.toString();
   }
 }
