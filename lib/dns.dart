@@ -30,6 +30,7 @@ class DNSHeader {
     return DNSHeader.encode(this);
   }
 
+  static DNSHeader decode(Buffer buffer) {}
   static Buffer encode(DNSHeader header) {
     var buffer = Buffer(12);
 

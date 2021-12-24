@@ -7,6 +7,9 @@ class Buffer {
 
   static final List<String> vv = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
+  ///
+  /// Create Buffer to join multiple Buffer
+  ///
   static Buffer combine(List<Buffer> buffers) {
     var length = 0;
     buffers.forEach((b) {
@@ -21,10 +24,16 @@ class Buffer {
     return buffer;
   }
 
+  ///
+  /// Generate Buffer from List<int>
+  ///
   Buffer.fromList(List<int> buffer) {
     _buffer = Uint8List.fromList(buffer);
   }
 
+  ///
+  /// Create Buffer from Buffer Length
+  ///
   Buffer(int length) {
     _buffer = Uint8List(length);
 
@@ -34,9 +43,18 @@ class Buffer {
     }
   }
 
+  int getInt16FromBigEndian(int index) {
+    var value = 0;
+    var v2 = _buffer[index + 0];
+    var v1 = _buffer[index + 1];
+    value |= (v1 & 0xFF);
+    value |= ((v2 << 8) & 0xFF00);
+    return value;
+  }
+
   void setInt16AtBigEndian(int index, int value) {
-    _buffer[index + 0] = (value << 8) & 0xFF;
-    _buffer[index + 1] = (value << 0) & 0xFF;
+    _buffer[index + 0] = (value >> 8) & 0xFF;
+    _buffer[index + 1] = (value >> 0) & 0xFF;
   }
 
   void setByteAtBigEndian(int index, int value) {
@@ -44,10 +62,10 @@ class Buffer {
   }
 
   void setInt32AtBigEndian(int index, int value) {
-    _buffer[index + 0] = (value << 24) & 0xFF;
-    _buffer[index + 1] = (value << 16) & 0xFF;
-    _buffer[index + 2] = (value << 8) & 0xFF;
-    _buffer[index + 3] = (value << 0) & 0xFF;
+    _buffer[index + 0] = (value >> 24) & 0xFF;
+    _buffer[index + 1] = (value >> 16) & 0xFF;
+    _buffer[index + 2] = (value >> 8) & 0xFF;
+    _buffer[index + 3] = (value >> 0) & 0xFF;
   }
 
   void setBytes(int index, List<int> bytes) {
