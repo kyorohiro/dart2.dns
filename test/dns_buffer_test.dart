@@ -19,6 +19,12 @@ void main() {
       var out = buffer.getInt32FromBigEndian(0);
       expect(out, src);
     });
+    test('DNSBuffer.decode() 32', () {
+      var src = '0123456789abcdef';
+      var exp = [0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef];
+      var buffer = Buffer.fromHexString(src);
+      expect(buffer.toString(), src);
+    });
     // 0034818000010001000000000667697468756203636f6d0000010001c00c000100010000003c00043445ba2c
   });
 }

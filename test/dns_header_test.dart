@@ -15,6 +15,7 @@ void main() {
       var buffer = DNSHeader.encode(DNSHeader()..id = 0x7b);
       expect(buffer.toString(), '007b01000001000000000000');
     });
+
     // 0034818000010001000000000667697468756203636f6d0000010001c00c000100010000003c00043445ba2c
   });
 }

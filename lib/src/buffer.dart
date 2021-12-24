@@ -32,6 +32,17 @@ class Buffer {
   }
 
   ///
+  /// Generate Buffer from HexString
+  ///
+  Buffer.fromHexString(String hexSrc) {
+    _buffer = Uint8List(hexSrc.length ~/ 2);
+    for (var i = 0, j = 0; i < hexSrc.length; i += 2, j++) {
+      var v = int.parse(hexSrc.substring(i, i + 2), radix: 16);
+      _buffer[j] = v & 0xFF;
+    }
+  }
+
+  ///
   /// Create Buffer from Buffer Length
   ///
   Buffer(int length) {
