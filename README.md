@@ -60,6 +60,18 @@ CH              3 the CHAOS class
 HS              4 Hesiod [Dyer 87]
 ```
 
+
+# RESPONSE
+
+```
+NAME: xxbit
+TYPE: 16bit
+CLASS: 16bit
+TTL: 32bit
+RDLENGTH: 16bit
+RDATA: xxbit
+```
+
 ### CLIENT REQUEST SAMPLE
 
 ```
