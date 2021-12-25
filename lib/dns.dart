@@ -7,8 +7,7 @@ import 'package:tuple/tuple.dart' show Tuple2;
 export 'src/header.dart';
 export 'src/buffer.dart';
 export 'src/question.dart';
-
-class DNSRecord {}
+export 'src/record.dart';
 
 class DNSName {
   static Uint8List urlToQname(String url) {
