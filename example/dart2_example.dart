@@ -20,3 +20,12 @@ void main() {
 /// 0000
 /// 0667697468756203636f6d0000010001
 /// c00c000100010000003c00043445ba2c
+
+/**
+NAME: xxbit
+TYPE: 16bit
+CLASS: 16bit
+TTL: 32bit
+RDLENGTH: 16bit
+RDATA: xxbit
+ */
