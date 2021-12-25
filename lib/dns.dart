@@ -125,6 +125,23 @@ class DNSQuestion {
     buffer.setInt16AtBigEndian(qnameBuffer.length + 2, q.qClass);
     return buffer;
   }
+
+  static Tuple2<List<DNSQuestion>, int> decode(Buffer buffer, int count) {
+    var questions = <DNSQuestion>[];
+    var index = 0;
+    for (var i = 0; i < count; i++) {
+      print("i: ${i} ${buffer.raw.length} - ${index}");
+      var question = DNSQuestion();
+      var url = DNSName.qnameToUrl(buffer.raw, index, buffer.raw.length);
+      print("- ${url.item1} ${url.item2}");
+      question.hostOrIP = url.item1;
+      question.qType = buffer.getInt16FromBigEndian(index + url.item2 + 1);
+      question.qClass = buffer.getInt16FromBigEndian(index + url.item2 + 1 + 2);
+      questions.add(question);
+      index += url.item2 + 1 + 4;
+    }
+    return Tuple2<List<DNSQuestion>, int>(questions, index);
+  }
 }
 
 class DNSName {
@@ -161,17 +178,16 @@ class DNSName {
   ///
   /// ret
   ///   string item is url
-  ///   int item is next index without Null(0)
+  ///   int item is length without Null(0)
   static Tuple2<String, int> qnameToUrl(Uint8List srcBuffer, int index, int length) {
     var outBuffer = StringBuffer();
     if (length > srcBuffer.length) {
       length = srcBuffer.length;
     }
     var i = index;
-
     for (; i < length;) {
       var nameLength = srcBuffer[i];
-
+      print(">> [${i}] nbs = ${nameLength}");
       if (nameLength == 0) {
         // if Null(0) is TEXT END
         // i++;
@@ -188,7 +204,7 @@ class DNSName {
         break;
       } else if (i + 1 + nameLength > length) {
         // anything wrong , return empty string
-        throw Exception('>>Wrong i+nameLength > length := ${i + nameLength} > $length');
+        throw Exception('>> [${i}] Wrong i+nameLength > length := ${i + 1 + nameLength} > $length');
       } else {
         var nameBytes = srcBuffer.sublist(i + 1, i + 1 + nameLength);
         if (outBuffer.length > 0) {
@@ -198,7 +214,7 @@ class DNSName {
         i = i + 1 + nameLength;
       }
     }
-    return Tuple2<String, int>(outBuffer.toString(), i);
+    return Tuple2<String, int>(outBuffer.toString(), i - index);
   }
 
   static Tuple2<List<String>, int> qnamesToUrls(Uint8List srcBuffer, int length, int count) {
@@ -207,7 +223,7 @@ class DNSName {
     for (var c = 0; c < count; c++) {
       var r = qnameToUrl(srcBuffer, index, length);
       qnames.add(r.item1);
-      index = r.item2;
+      index += r.item2;
       if (srcBuffer[index] == 0x00) {
         index++;
       }
@@ -254,5 +270,10 @@ class DNS {
     var headerBuffer = (DNSHeader()..id = id).generateBuffer();
     var questionBuffer = (DNSQuestion()..hostOrIP = host).generateBuffer();
     return Buffer.combine([headerBuffer, questionBuffer]);
+  }
+
+  Buffer parseMessage(Buffer buffer) {
+    var header = DNSHeader.decode(buffer);
+    //header.
   }
 }

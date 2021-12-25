@@ -54,6 +54,13 @@ class Buffer {
     }
   }
 
+  Buffer subBuffer(int index, int length) {
+    if (length == -1) {
+      length = _buffer.length - index;
+    }
+    return Buffer.fromList(_buffer.sublist(index, index + length));
+  }
+
   int getInt16FromBigEndian(int index) {
     var value = 0;
     var v2 = _buffer[index + 0];
