@@ -59,7 +59,7 @@ class DNSName {
         break;
       } else if ((0xC0 & nameLength) == 0xC0) {
         // compression
-        var v = (0x3f & nameLength);
+        var v = srcBuffer[++i];
         var r = qnameToUrl(srcBuffer, v, length);
         if (outBuffer.length > 0) {
           outBuffer.write('.');

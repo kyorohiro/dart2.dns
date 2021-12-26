@@ -19,7 +19,7 @@ void main() {
       expect(question.item1[0].qType, 1);
     });
 
-    test('DNSQuestion.decode() 1', () {
+    test('DNSQuestion.decode() 2', () {
       var buffer1 = DNSQuestion.encode(DNSQuestion()..hostOrIP = 'github.com');
       var buffer2 = DNSQuestion.encode(DNSQuestion()..hostOrIP = 'yahoo.co.jp');
       var buffer = Buffer.combine([buffer1, buffer2]);
