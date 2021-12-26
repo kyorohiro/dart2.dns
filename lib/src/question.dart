@@ -29,10 +29,10 @@ class DNSQuestion {
       var question = DNSQuestion();
       var url = DNSName.getUrlFromQname(buffer.raw, indexTmp, buffer.raw.length);
       question.qName = url.item1;
-      question.qType = buffer.getInt16AtBE(indexTmp + url.item2 + 1);
-      question.qClass = buffer.getInt16AtBE(indexTmp + url.item2 + 1 + 2);
+      question.qType = buffer.getInt16AtBE(indexTmp + url.item2);
+      question.qClass = buffer.getInt16AtBE(indexTmp + url.item2 + 2);
       questions.add(question);
-      indexTmp += url.item2 + 1 + 4;
+      indexTmp += url.item2 + 4;
     }
     return Tuple2<List<DNSQuestion>, int>(questions, indexTmp - index);
   }
