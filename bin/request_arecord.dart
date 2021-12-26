@@ -6,7 +6,7 @@ import 'dart:convert' show utf8;
 
 main(List<String> argv) async {
   var domain = 'github.com';
-  if (argv.length > 0) {
+  if (argv.isNotEmpty) {
     domain = argv[0];
   }
   var requestBuffer = DNS().generateAMessage(domain);
@@ -31,9 +31,9 @@ main(List<String> argv) async {
 
   var header = DNSHeader.decode(dnsBuffer);
   var questionInfo = DNSQuestion.decode(dnsBuffer, DNSHeader.BUFFER_SIZE, header.qdcount);
-  var anRecordInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2, header.ancount);
-  var nsRecordInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + anRecordInfo.item2, header.nscount);
-  var arRecordInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + anRecordInfo.item2 + nsRecordInfo.item2, header.arcount);
+  var answerInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2, header.ancount);
+  var authorityInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + answerInfo.item2, header.nscount);
+  var additionalInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + answerInfo.item2 + authorityInfo.item2, header.arcount);
 
   if (header.qdcount > 0) {
     print('; Questions');
@@ -45,7 +45,36 @@ main(List<String> argv) async {
     }
   }
   if (header.ancount > 0) {
-    for (var record in anRecordInfo.item1) {
+    print('; Answer');
+    for (var record in answerInfo.item1) {
+      print(';; name: ${record.name}');
+      print(';; type: ${record.type}');
+      print(';; class: ${record.clazz}');
+      print(';; ttl: ${record.ttl}');
+      print(';; rdlength: ${record.rdlength}');
+      print(';; rdata: ${record.rdata}');
+      print(';; rdata athex: ${DNSBuffer.fromList(record.rdata).toString()}');
+      print(';; -- ');
+    }
+  }
+
+  if (header.nscount > 0) {
+    print('; Authority');
+    for (var record in authorityInfo.item1) {
+      print(';; name: ${record.name}');
+      print(';; type: ${record.type}');
+      print(';; class: ${record.clazz}');
+      print(';; ttl: ${record.ttl}');
+      print(';; rdlength: ${record.rdlength}');
+      print(';; rdata: ${record.rdata}');
+      print(';; rdata athex: ${DNSBuffer.fromList(record.rdata).toString()}');
+      print(';; -- ');
+    }
+  }
+
+  if (header.arcount > 0) {
+    print('; Additional');
+    for (var record in additionalInfo.item1) {
       print(';; name: ${record.name}');
       print(';; type: ${record.type}');
       print(';; class: ${record.clazz}');
