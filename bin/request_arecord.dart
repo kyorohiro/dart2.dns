@@ -10,19 +10,23 @@ main(List<String> argv) async {
     domain = argv[0];
   }
   var requestBuffer = DNS().generateAMessage(domain);
-  print(requestBuffer.toBase64());
+  var requestQuery = requestBuffer.toBase64().replaceAll('=', '');
+  print('; Request query');
+  print(';; $requestQuery');
+
   var client = io.HttpClient();
 
-  var request = await client.getUrl(Uri(scheme: 'https', host: 'dns.google', path: 'dns-query', query: "dns=${requestBuffer.toBase64().replaceAll('=', '')}"));
+  var request = await client.getUrl(Uri(scheme: 'https', host: 'dns.google', path: 'dns-query', query: "dns=${requestQuery}"));
   var response = await request.close();
   var responseBuffer = <int>[];
   await for (var part in response) {
     responseBuffer.addAll(part);
   }
   var dnsBuffer = DNSBuffer.fromList(responseBuffer);
-  print(response.statusCode);
-  print(DNSBuffer.fromList(responseBuffer).toString());
-  print(utf8.decode(responseBuffer, allowMalformed: true));
+  print('; Response');
+  print(';; statusCode: ${response.statusCode}');
+  print(';; body as hex: ${DNSBuffer.fromList(responseBuffer).toString()}');
+  print(';; body as text: ${utf8.decode(responseBuffer, allowMalformed: true)}');
 
   var header = DNSHeader.decode(dnsBuffer);
   var questionInfo = DNSQuestion.decode(dnsBuffer, DNSHeader.BUFFER_SIZE, header.qdcount);
@@ -30,5 +34,11 @@ main(List<String> argv) async {
   var nsRecordInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + anRecordInfo.item2, header.nscount);
   var arRecordInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + anRecordInfo.item2 + nsRecordInfo.item2, header.arcount);
 
-  
+  if (header.qdcount > 0) {
+    print('; Questions');
+    for (var question in questionInfo.item1) {
+      print(';; name: ${question.qName}');
+      print(';; name: ${question.qName}');
+    }
+  }
 }

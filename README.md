@@ -1,5 +1,12 @@
 Hello DNS Query
 
+# How to use
+
+```
+$ dart bin/request_arecord.dart github.com
+
+```
+
 # QUERY FORMAT
 
 ```

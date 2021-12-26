@@ -133,7 +133,7 @@ class DNS {
 
   DNSBuffer generateAMessage(String host, [int id = 0x1234]) {
     var headerBuffer = (DNSHeader()..id = id).generateBuffer();
-    var questionBuffer = (DNSQuestion()..hostOrIP = host).generateBuffer();
+    var questionBuffer = (DNSQuestion()..qName = host).generateBuffer();
     return DNSBuffer.combine([headerBuffer, questionBuffer]);
   }
 
