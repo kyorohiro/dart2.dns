@@ -15,7 +15,6 @@ class DNSRecord {
       var record = DNSRecord();
       var name = DNSName.qnameToUrl(buffer.raw, indexTmp, buffer.raw.length);
       record.name = name.item1;
-      print("-- item2 : ${name.item2}");
       record.type = buffer.getInt16FromBigEndian(indexTmp + name.item2);
       record.clazz = buffer.getInt16FromBigEndian(indexTmp + name.item2 + 2);
       record.ttl = buffer.getInt32FromBigEndian(indexTmp + name.item2 + 2 + 2);

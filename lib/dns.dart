@@ -52,7 +52,6 @@ class DNSName {
     var i = index;
     for (; i < length;) {
       var nameLength = srcBuffer[i];
-      print(">> [${i}] nbs = ${nameLength}");
       if (nameLength == 0) {
         // if Null(0) is TEXT END
         // i++;

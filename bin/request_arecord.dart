@@ -13,9 +13,9 @@ main(List<String> argv) async {
   var requestQuery = requestBuffer.toBase64().replaceAll('=', '');
   print('; Request query');
   print(';; $requestQuery');
+  print(';; -- ');
 
   var client = io.HttpClient();
-
   var request = await client.getUrl(Uri(scheme: 'https', host: 'dns.google', path: 'dns-query', query: "dns=${requestQuery}"));
   var response = await request.close();
   var responseBuffer = <int>[];
@@ -27,6 +27,7 @@ main(List<String> argv) async {
   print(';; statusCode: ${response.statusCode}');
   print(';; body as hex: ${DNSBuffer.fromList(responseBuffer).toString()}');
   print(';; body as text: ${utf8.decode(responseBuffer, allowMalformed: true)}');
+  print(';; -- ');
 
   var header = DNSHeader.decode(dnsBuffer);
   var questionInfo = DNSQuestion.decode(dnsBuffer, DNSHeader.BUFFER_SIZE, header.qdcount);
@@ -51,7 +52,7 @@ main(List<String> argv) async {
       print(';; ttl: ${record.ttl}');
       print(';; rdlength: ${record.rdlength}');
       print(';; rdata: ${record.rdata}');
-      print(';; rdata: ${DNSBuffer.fromList(record.rdata).toString()}');
+      print(';; rdata athex: ${DNSBuffer.fromList(record.rdata).toString()}');
       print(';; -- ');
     }
   }
