@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:dart2.dns/dns.dart' show DNS, DNSHeader, DNSQuestion, DNSRecord, DNSBuffer;
 import 'dart:io' as io;
 import 'dart:convert' show utf8;
