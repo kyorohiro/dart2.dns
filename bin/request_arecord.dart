@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:dart2.dns/dns.dart';
 import 'dart:io' as io;
+import 'dart:convert' show utf8;
 
 main(List<String> argv) async {
   print("hello!! ${argv}");
@@ -13,13 +14,16 @@ main(List<String> argv) async {
   print(requestBuffer.toBase64());
   var client = io.HttpClient();
 
-  var request = await client.getUrl(Uri(scheme: 'https', host: 'dns.google', path: 'dns-query', query: "dns=${requestBuffer.toBase64()}"));
+  var request = await client.getUrl(Uri(scheme: 'https', host: 'dns.google', path: 'dns-query', query: "dns=${requestBuffer.toBase64().replaceAll('=', '')}"));
   var response = await request.close();
   var responseBuffer = <int>[];
   await for (var part in response) {
     responseBuffer.addAll(part);
   }
+  print(response.statusCode);
   print(Buffer.fromList(responseBuffer).toString());
+  print(utf8.decode(responseBuffer, allowMalformed: true));
+
   //var buffer = DNS().generateAMessage("github.com");
   //print(buffer.toBase64());
   //var buffer = Buffer.fromHexString('0034818000010001000000000667697468756203636f6d0000010001c00c000100010000003c00043445ba2c');
