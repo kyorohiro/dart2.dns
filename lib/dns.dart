@@ -89,7 +89,7 @@ class DNSName {
       var r = qnameToUrl(srcBuffer, index, length);
       qnames.add(r.item1);
       index += r.item2;
-      if (srcBuffer[index] == 0x00) {
+      if (index < srcBuffer.length && srcBuffer[index] == 0x00) {
         index++;
       }
     }
