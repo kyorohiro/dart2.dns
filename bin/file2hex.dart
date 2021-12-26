@@ -9,6 +9,6 @@ main(List<String> argv) async {
   }
   var f = io.File(filepath);
   var bytes = await f.readAsBytes();
-  var buffer = new Buffer.fromList(bytes);
+  var buffer = new DNSBuffer.fromList(bytes);
   print(buffer.toString());
 }

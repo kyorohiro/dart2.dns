@@ -6,7 +6,7 @@ import 'dart:typed_data' show Uint8List;
 void main() {
   //var buffer = DNS().generateAMessage("github.com");
   //print(buffer.toBase64());
-  var buffer = Buffer.fromHexString('0034818000010001000000000667697468756203636f6d0000010001c00c000100010000003c00043445ba2c');
+  var buffer = DNSBuffer.fromHexString('0034818000010001000000000667697468756203636f6d0000010001c00c000100010000003c00043445ba2c');
   var header = DNSHeader.decode(buffer);
   var question = DNSQuestion.decode(buffer.subBuffer(12, -1), 0, header.qdcount);
 }

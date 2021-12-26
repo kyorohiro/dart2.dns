@@ -1,7 +1,7 @@
 import 'dart:typed_data' show Uint8List;
 import 'dart:convert' show base64;
 
-class Buffer {
+class DNSBuffer {
   Uint8List _buffer;
   Uint8List get raw => _buffer;
 
@@ -10,12 +10,12 @@ class Buffer {
   ///
   /// Create Buffer to join multiple Buffer
   ///
-  static Buffer combine(List<Buffer> buffers) {
+  static DNSBuffer combine(List<DNSBuffer> buffers) {
     var length = 0;
     buffers.forEach((b) {
       length += b.raw.length;
     });
-    var buffer = Buffer(length);
+    var buffer = DNSBuffer(length);
     var index = 0;
     buffers.forEach((b) {
       buffer.setBytes(index, b.raw);
@@ -27,14 +27,14 @@ class Buffer {
   ///
   /// Generate Buffer from List<int>
   ///
-  Buffer.fromList(List<int> buffer) {
+  DNSBuffer.fromList(List<int> buffer) {
     _buffer = Uint8List.fromList(buffer);
   }
 
   ///
   /// Generate Buffer from HexString
   ///
-  Buffer.fromHexString(String hexSrc) {
+  DNSBuffer.fromHexString(String hexSrc) {
     _buffer = Uint8List(hexSrc.length ~/ 2);
     for (var i = 0, j = 0; i < hexSrc.length; i += 2, j++) {
       var v = int.parse(hexSrc.substring(i, i + 2), radix: 16);
@@ -45,7 +45,7 @@ class Buffer {
   ///
   /// Create Buffer from Buffer Length
   ///
-  Buffer(int length) {
+  DNSBuffer(int length) {
     _buffer = Uint8List(length);
 
     // ZERO CLEAR
@@ -54,11 +54,11 @@ class Buffer {
     }
   }
 
-  Buffer subBuffer(int index, int length) {
+  DNSBuffer subBuffer(int index, int length) {
     if (length == -1) {
       length = _buffer.length - index;
     }
-    return Buffer.fromList(_buffer.sublist(index, index + length));
+    return DNSBuffer.fromList(_buffer.sublist(index, index + length));
   }
 
   int getInt16FromBigEndian(int index) {

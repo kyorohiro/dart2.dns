@@ -12,7 +12,7 @@ void main() {
     });
 
     test('DNSQuestion.decode() 1', () {
-      var buffer = Buffer.fromHexString('0667697468756203636f6d0000010001');
+      var buffer = DNSBuffer.fromHexString('0667697468756203636f6d0000010001');
       var question = DNSQuestion.decode(buffer, 0, 1);
       expect(question.item1[0].hostOrIP, 'github.com');
       expect(question.item1[0].qClass, 1);
@@ -22,7 +22,7 @@ void main() {
     test('DNSQuestion.decode() 2', () {
       var buffer1 = DNSQuestion.encode(DNSQuestion()..hostOrIP = 'github.com');
       var buffer2 = DNSQuestion.encode(DNSQuestion()..hostOrIP = 'yahoo.co.jp');
-      var buffer = Buffer.combine([buffer1, buffer2]);
+      var buffer = DNSBuffer.combine([buffer1, buffer2]);
       expect(buffer.toString(), '0667697468756203636f6d0000010001057961686f6f02636f026a700000010001');
 
       var question = DNSQuestion.decode(buffer, 0, 2);

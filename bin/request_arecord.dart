@@ -1,11 +1,10 @@
 import 'dart:typed_data';
 
-import 'package:dart2.dns/dns.dart';
+import 'package:dart2.dns/dns.dart' show DNS, DNSHeader, DNSQuestion, DNSRecord, DNSBuffer;
 import 'dart:io' as io;
 import 'dart:convert' show utf8;
 
 main(List<String> argv) async {
-  print("hello!! ${argv}");
   var domain = 'github.com';
   if (argv.length > 0) {
     domain = argv[0];
@@ -20,9 +19,12 @@ main(List<String> argv) async {
   await for (var part in response) {
     responseBuffer.addAll(part);
   }
+  var dnsBuffer = DNSBuffer.fromList(responseBuffer);
   print(response.statusCode);
-  print(Buffer.fromList(responseBuffer).toString());
+  print(DNSBuffer.fromList(responseBuffer).toString());
   print(utf8.decode(responseBuffer, allowMalformed: true));
+
+  var header = DNSHeader.decode(dnsBuffer);
 
   //var buffer = DNS().generateAMessage("github.com");
   //print(buffer.toBase64());

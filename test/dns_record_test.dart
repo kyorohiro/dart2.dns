@@ -8,7 +8,7 @@ void main() {
 
     test('DNSRecord.decode() 1', () {
       // c00c000100010000003c00043445ba2c
-      var buffer = Buffer.fromHexString('0667697468756203636f6d0000010001c000000100010000003c00043445ba2c');
+      var buffer = DNSBuffer.fromHexString('0667697468756203636f6d0000010001c000000100010000003c00043445ba2c');
       var record = DNSRecord.decode(buffer, 16, 1);
       // c00c000100010000003c00043445ba2c
       expect(record.item1[0].name, 'github.com'); // c00c

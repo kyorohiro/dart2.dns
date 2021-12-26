@@ -21,11 +21,11 @@ class DNSHeader {
   int nscount = 0; // NSCOUNT: 16bit
   int arcount = 0; // ARCOUNT: 16bit
 
-  Buffer generateBuffer() {
+  DNSBuffer generateBuffer() {
     return DNSHeader.encode(this);
   }
 
-  static DNSHeader decode(Buffer buffer) {
+  static DNSHeader decode(DNSBuffer buffer) {
     var header = DNSHeader();
     header.id = buffer.getInt16FromBigEndian(0);
     {
@@ -52,8 +52,8 @@ class DNSHeader {
     return header;
   }
 
-  static Buffer encode(DNSHeader header) {
-    var buffer = Buffer(12);
+  static DNSBuffer encode(DNSHeader header) {
+    var buffer = DNSBuffer(12);
 
     ///
     /// HEADER

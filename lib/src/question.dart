@@ -9,20 +9,20 @@ class DNSQuestion {
   int qType = DNS.QTYPE_A; // QTYPE: 16bit
   int qClass = DNS.QCLASS_IN; // QCLASS: 16bit
 
-  Buffer generateBuffer() {
+  DNSBuffer generateBuffer() {
     return DNSQuestion.encode(this);
   }
 
-  static Buffer encode(DNSQuestion q) {
+  static DNSBuffer encode(DNSQuestion q) {
     var qnameBuffer = DNSName.urlToQname(q.hostOrIP);
-    var buffer = Buffer(qnameBuffer.length + 2 + 2);
+    var buffer = DNSBuffer(qnameBuffer.length + 2 + 2);
     buffer.setBytes(0, qnameBuffer);
     buffer.setInt16AtBigEndian(qnameBuffer.length, q.qType);
     buffer.setInt16AtBigEndian(qnameBuffer.length + 2, q.qClass);
     return buffer;
   }
 
-  static Tuple2<List<DNSQuestion>, int> decode(Buffer buffer, int index, int count) {
+  static Tuple2<List<DNSQuestion>, int> decode(DNSBuffer buffer, int index, int count) {
     var questions = <DNSQuestion>[];
     var indexTmp = index;
     for (var i = 0; i < count; i++) {

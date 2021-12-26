@@ -131,13 +131,13 @@ class DNS {
   static final int QCLASS_CH = 3; // the CHAOS class
   static final int QCLASS_HS = 4; // Hesiod [Dyer 87]
 
-  Buffer generateAMessage(String host, [int id = 0x1234]) {
+  DNSBuffer generateAMessage(String host, [int id = 0x1234]) {
     var headerBuffer = (DNSHeader()..id = id).generateBuffer();
     var questionBuffer = (DNSQuestion()..hostOrIP = host).generateBuffer();
-    return Buffer.combine([headerBuffer, questionBuffer]);
+    return DNSBuffer.combine([headerBuffer, questionBuffer]);
   }
 
-  Buffer parseMessage(Buffer buffer) {
+  DNSBuffer parseMessage(DNSBuffer buffer) {
     var header = DNSHeader.decode(buffer);
     //header.
   }

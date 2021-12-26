@@ -8,7 +8,7 @@ class DNSRecord {
   int ttl; // 32bit
   int rdlength; // 16bit
   List<int> rdata; // edlength bytes;
-  static Tuple2<List<DNSRecord>, int> decode(Buffer buffer, int index, int count) {
+  static Tuple2<List<DNSRecord>, int> decode(DNSBuffer buffer, int index, int count) {
     var indexTmp = index;
     var records = <DNSRecord>[];
     for (var i = 0; i < count; i++) {
