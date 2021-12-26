@@ -15,8 +15,8 @@ void main() {
       expect(record.item1[0].type, 1); // 0001
       expect(record.item1[0].clazz, 1); // 0001
       expect(record.item1[0].ttl, 60); // 0000003c
-      expect(record.item1[0].rdlength, 4); // 03c0 // 0004
-      expect(record.item1[0].rdata, <int>[52, 69, 186, 44]); // 0043445ba2c //  3445ba2c
+      expect(record.item1[0].rdlength, 4); // 0004
+      expect(record.item1[0].rdata, <int>[52, 69, 186, 44]); //  3445ba2c
     });
   });
 }
