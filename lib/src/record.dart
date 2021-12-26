@@ -15,10 +15,10 @@ class DNSRecord {
       var record = DNSRecord();
       var name = DNSName.qnameToUrl(buffer.raw, indexTmp, buffer.raw.length);
       record.name = name.item1;
-      record.type = buffer.getInt16FromBigEndian(indexTmp + name.item2);
-      record.clazz = buffer.getInt16FromBigEndian(indexTmp + name.item2 + 2);
-      record.ttl = buffer.getInt32FromBigEndian(indexTmp + name.item2 + 2 + 2);
-      record.rdlength = buffer.getInt16FromBigEndian(indexTmp + name.item2 + 2 + 2 + 4);
+      record.type = buffer.getInt16AtBE(indexTmp + name.item2);
+      record.clazz = buffer.getInt16AtBE(indexTmp + name.item2 + 2);
+      record.ttl = buffer.getInt32AtBE(indexTmp + name.item2 + 2 + 2);
+      record.rdlength = buffer.getInt16AtBE(indexTmp + name.item2 + 2 + 2 + 4);
       record.rdata = buffer.subBuffer(indexTmp + name.item2 + 2 + 2 + 4 + 2, record.rdlength).raw;
       indexTmp += indexTmp + name.item2 + 2 + 2 + 4 + 2 + record.rdlength;
       records.add(record);

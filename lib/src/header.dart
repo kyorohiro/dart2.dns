@@ -27,9 +27,9 @@ class DNSHeader {
 
   static DNSHeader decode(DNSBuffer buffer) {
     var header = DNSHeader();
-    header.id = buffer.getInt16FromBigEndian(0);
+    header.id = buffer.getInt16AtBE(0);
     {
-      var tmp = buffer.getByteFromBigEndian(2);
+      var tmp = buffer.getByte(2);
       header.qr = (tmp >> 7) & 0x01;
       header.opcode = (tmp >> 3) & 0x0F;
       header.aa = ((tmp >> 2) & 0x01) == 1;
@@ -37,17 +37,17 @@ class DNSHeader {
       header.rd = ((tmp >> 0) & 0x01) == 1;
     }
     {
-      var tmp = buffer.getByteFromBigEndian(3);
+      var tmp = buffer.getByte(3);
       header.ra = ((tmp >> 7) & 0x01) == 1;
       header.z = (tmp >> 4) & 0x07;
       header.rcode = (tmp >> 0) & 0x0F;
     }
 
     {
-      header.qdcount = buffer.getInt16FromBigEndian(4);
-      header.ancount = buffer.getInt16FromBigEndian(6);
-      header.nscount = buffer.getInt16FromBigEndian(8);
-      header.arcount = buffer.getInt16FromBigEndian(10);
+      header.qdcount = buffer.getInt16AtBE(4);
+      header.ancount = buffer.getInt16AtBE(6);
+      header.nscount = buffer.getInt16AtBE(8);
+      header.arcount = buffer.getInt16AtBE(10);
     }
     return header;
   }
@@ -64,7 +64,7 @@ class DNSHeader {
       if (id == 0) {
         id = Random.secure().nextInt(0xFFFF);
       }
-      buffer.setInt16AtBigEndian(0, id);
+      buffer.setInt16AtBE(0, id);
     }
     {
       var tmp = 0x00;
@@ -79,7 +79,7 @@ class DNSHeader {
       if (header.rd) {
         tmp |= (0x01 << 0) & 0xFF;
       }
-      buffer.setByteAtBigEndian(2, tmp);
+      buffer.setByte(2, tmp);
     }
     {
       var tmp = 0x00;
@@ -89,13 +89,13 @@ class DNSHeader {
       tmp |= (header.z << 4) & 0xFF;
       tmp |= (header.rcode) & 0xFF;
 
-      buffer.setByteAtBigEndian(3, tmp);
+      buffer.setByte(3, tmp);
     }
 
-    buffer.setInt16AtBigEndian(4, header.qdcount);
-    buffer.setInt16AtBigEndian(6, header.ancount);
-    buffer.setInt16AtBigEndian(8, header.nscount);
-    buffer.setInt16AtBigEndian(10, header.arcount);
+    buffer.setInt16AtBE(4, header.qdcount);
+    buffer.setInt16AtBE(6, header.ancount);
+    buffer.setInt16AtBE(8, header.nscount);
+    buffer.setInt16AtBE(10, header.arcount);
     return buffer;
   }
 }

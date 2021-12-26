@@ -7,16 +7,16 @@ void main() {
 
     test('DNSBuffer.decode() 16', () {
       var src = 0x1234;
-      var buffer = DNSBuffer(2)..setInt16AtBigEndian(0, src);
+      var buffer = DNSBuffer(2)..setInt16AtBE(0, src);
       expect(buffer.toString(), '1234');
-      var out = buffer.getInt16FromBigEndian(0);
+      var out = buffer.getInt16AtBE(0);
       expect(out, src);
     });
     test('DNSBuffer.decode() 32', () {
       var src = 0x12345678;
-      var buffer = DNSBuffer(4)..setInt32AtBigEndian(0, src);
+      var buffer = DNSBuffer(4)..setInt32AtBE(0, src);
       expect(buffer.toString(), '12345678');
-      var out = buffer.getInt32FromBigEndian(0);
+      var out = buffer.getInt32AtBE(0);
       expect(out, src);
     });
     test('DNSBuffer.decode() 32', () {

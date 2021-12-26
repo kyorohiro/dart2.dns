@@ -61,7 +61,7 @@ class DNSBuffer {
     return DNSBuffer.fromList(_buffer.sublist(index, index + length));
   }
 
-  int getInt16FromBigEndian(int index) {
+  int getInt16AtBE(int index) {
     var value = 0;
     var v2 = _buffer[index + 0];
     var v1 = _buffer[index + 1];
@@ -70,20 +70,20 @@ class DNSBuffer {
     return value;
   }
 
-  void setInt16AtBigEndian(int index, int value) {
+  void setInt16AtBE(int index, int value) {
     _buffer[index + 0] = (value >> 8) & 0xFF;
     _buffer[index + 1] = (value >> 0) & 0xFF;
   }
 
-  int getByteFromBigEndian(int index) {
+  int getByte(int index) {
     return _buffer[index] & 0xFF;
   }
 
-  void setByteAtBigEndian(int index, int value) {
+  void setByte(int index, int value) {
     _buffer[index] = (value << 0) & 0xFF;
   }
 
-  int getInt32FromBigEndian(int index) {
+  int getInt32AtBE(int index) {
     var value = 0;
     var v4 = _buffer[index + 0];
     var v3 = _buffer[index + 1];
@@ -98,7 +98,7 @@ class DNSBuffer {
     return value;
   }
 
-  void setInt32AtBigEndian(int index, int value) {
+  void setInt32AtBE(int index, int value) {
     _buffer[index + 0] = (value >> 24) & 0xFF;
     _buffer[index + 1] = (value >> 16) & 0xFF;
     _buffer[index + 2] = (value >> 8) & 0xFF;
