@@ -28,7 +28,7 @@ void main() {
       var exp = 'github.com';
       var out = DNSName.getUrlFromQname(Uint8List.fromList(src), 0, src.length);
       expect(out.item1, exp);
-      expect(out.item2, src.length - 1);
+      expect(out.item2, src.length);
     });
 
     test('DNS.qnameToUrl with compression', () {
@@ -46,21 +46,6 @@ void main() {
         expect(out.item1, exp);
         expect(out.item2, src.length - 12);
       }
-    });
-
-    test('DNS.namesToUrls', () {
-      var src = [6, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 3, 0x63, 0x6f, 0x6d, 0x00, 6, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 3, 0x63, 0x6f, 0x6d, 0x00];
-      var exp = ['github.com', 'github.com'];
-      var out = DNSName.qnamesToUrls(Uint8List.fromList(src), src.length, 2);
-      expect(out.item1, exp);
-      expect(out.item2, src.length);
-    });
-    test('DNS.namesToUrls with compress', () {
-      var src = [6, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 3, 0x63, 0x6f, 0x6d, 0x00, 6, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 3, 0x63, 0x6f, 0x6d, 0xC0, 0x07, 0x00];
-      var exp = ['github.com', 'github.com.com'];
-      var out = DNSName.qnamesToUrls(Uint8List.fromList(src), src.length, 2);
-      expect(out.item1, exp);
-      expect(out.item2, src.length);
     });
   });
 }
