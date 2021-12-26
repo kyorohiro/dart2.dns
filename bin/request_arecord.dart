@@ -37,8 +37,22 @@ main(List<String> argv) async {
   if (header.qdcount > 0) {
     print('; Questions');
     for (var question in questionInfo.item1) {
-      print(';; name: ${question.qName}');
-      print(';; name: ${question.qName}');
+      print(';; qName: ${question.qName}');
+      print(';; qClass: ${question.qClass}');
+      print(';; qType: ${question.qType}');
+      print(';; -- ');
+    }
+  }
+  if (header.ancount > 0) {
+    for (var record in anRecordInfo.item1) {
+      print(';; name: ${record.name}');
+      print(';; type: ${record.type}');
+      print(';; class: ${record.clazz}');
+      print(';; ttl: ${record.ttl}');
+      print(';; rdlength: ${record.rdlength}');
+      print(';; rdata: ${record.rdata}');
+      print(';; rdata: ${DNSBuffer.fromList(record.rdata).toString()}');
+      print(';; -- ');
     }
   }
 }

@@ -115,6 +115,10 @@ class DNSBuffer {
 
   @override
   String toString() {
+    return toHex();
+  }
+
+  String toHex() {
     var b = StringBuffer();
     for (var i = 0; i < _buffer.length; i++) {
       var v = _buffer[i];
