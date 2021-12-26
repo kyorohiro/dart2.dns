@@ -1,4 +1,4 @@
-name: dart2
+name: dart2.dns
 description: A starting point for Dart libraries or applications.
 # version: 1.0.0
 # homepage: https://www.example.com
@@ -6,7 +6,8 @@ description: A starting point for Dart libraries or applications.
 environment:
   sdk: '>=2.10.0 <3.0.0'
 
-#dependencies:
+dependencies:
+  tuple: ^2.0.0
 #  path: ^1.7.0
 
 dev_dependencies:
