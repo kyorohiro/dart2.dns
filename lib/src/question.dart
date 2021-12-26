@@ -22,18 +22,18 @@ class DNSQuestion {
     return buffer;
   }
 
-  static Tuple2<List<DNSQuestion>, int> decode(Buffer buffer, int count) {
+  static Tuple2<List<DNSQuestion>, int> decode(Buffer buffer, int index, int count) {
     var questions = <DNSQuestion>[];
-    var index = 0;
+    var indexTmp = index;
     for (var i = 0; i < count; i++) {
       var question = DNSQuestion();
-      var url = DNSName.qnameToUrl(buffer.raw, index, buffer.raw.length);
+      var url = DNSName.qnameToUrl(buffer.raw, indexTmp, buffer.raw.length);
       question.hostOrIP = url.item1;
-      question.qType = buffer.getInt16FromBigEndian(index + url.item2 + 1);
-      question.qClass = buffer.getInt16FromBigEndian(index + url.item2 + 1 + 2);
+      question.qType = buffer.getInt16FromBigEndian(indexTmp + url.item2 + 1);
+      question.qClass = buffer.getInt16FromBigEndian(indexTmp + url.item2 + 1 + 2);
       questions.add(question);
-      index += url.item2 + 1 + 4;
+      indexTmp += url.item2 + 1 + 4;
     }
-    return Tuple2<List<DNSQuestion>, int>(questions, index);
+    return Tuple2<List<DNSQuestion>, int>(questions, indexTmp - index);
   }
 }
