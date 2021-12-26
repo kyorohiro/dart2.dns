@@ -14,7 +14,7 @@ class DNSQuestion {
   }
 
   static DNSBuffer encode(DNSQuestion q) {
-    var qnameBuffer = DNSName.urlToQname(q.qName);
+    var qnameBuffer = DNSName.createQnameFromUrl(q.qName);
     var buffer = DNSBuffer(qnameBuffer.length + 2 + 2);
     buffer.setBytes(0, qnameBuffer);
     buffer.setInt16AtBE(qnameBuffer.length, q.qType);
@@ -27,12 +27,12 @@ class DNSQuestion {
     var indexTmp = index;
     for (var i = 0; i < count; i++) {
       var question = DNSQuestion();
-      var url = DNSName.qnameToUrl(buffer.raw, indexTmp, buffer.raw.length);
+      var url = DNSName.getUrlFromQname(buffer.raw, indexTmp, buffer.raw.length);
       question.qName = url.item1;
-      question.qType = buffer.getInt16AtBE(indexTmp + url.item2 + 1);
-      question.qClass = buffer.getInt16AtBE(indexTmp + url.item2 + 1 + 2);
+      question.qType = buffer.getInt16AtBE(indexTmp + url.item2);
+      question.qClass = buffer.getInt16AtBE(indexTmp + url.item2 + 2);
       questions.add(question);
-      indexTmp += url.item2 + 1 + 4;
+      indexTmp += url.item2 + 4;
     }
     return Tuple2<List<DNSQuestion>, int>(questions, indexTmp - index);
   }

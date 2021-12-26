@@ -10,7 +10,7 @@ export 'src/question.dart';
 export 'src/record.dart';
 
 class DNSName {
-  static Uint8List urlToQname(String url) {
+  static Uint8List createQnameFromUrl(String url) {
     var urlBytes = ascii.encode(url);
     var buffer = List<int>.empty(growable: true);
     var tmp = List<int>.empty(growable: true);
@@ -43,8 +43,8 @@ class DNSName {
   ///
   /// ret
   ///   string item is url
-  ///   int item is length without Null(0)
-  static Tuple2<String, int> qnameToUrl(Uint8List srcBuffer, int index, int length) {
+  ///   int item is length with Null(0)
+  static Tuple2<String, int> getUrlFromQname(Uint8List srcBuffer, int index, int length) {
     var outBuffer = StringBuffer();
     if (length > srcBuffer.length) {
       length = srcBuffer.length;
@@ -54,12 +54,12 @@ class DNSName {
       var nameLength = srcBuffer[i];
       if (nameLength == 0) {
         // if Null(0) is TEXT END
-        // i++;
+        i++;
         break;
       } else if ((0xC0 & nameLength) == 0xC0) {
         // compression
         var v = srcBuffer[++i];
-        var r = qnameToUrl(srcBuffer, v, length);
+        var r = getUrlFromQname(srcBuffer, v, length);
         if (outBuffer.length > 0) {
           outBuffer.write('.');
         }
@@ -79,20 +79,6 @@ class DNSName {
       }
     }
     return Tuple2<String, int>(outBuffer.toString(), i - index);
-  }
-
-  static Tuple2<List<String>, int> qnamesToUrls(Uint8List srcBuffer, int length, int count) {
-    var index = 0;
-    var qnames = <String>[];
-    for (var c = 0; c < count; c++) {
-      var r = qnameToUrl(srcBuffer, index, length);
-      qnames.add(r.item1);
-      index += r.item2;
-      if (index < srcBuffer.length && srcBuffer[index] == 0x00) {
-        index++;
-      }
-    }
-    return Tuple2<List<String>, int>(qnames, index);
   }
 }
 
