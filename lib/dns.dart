@@ -44,7 +44,7 @@ class DNSName {
   /// ret
   ///   string item is url
   ///   int item is length without Null(0)
-  static Tuple2<String, int> qnameToUrl(Uint8List srcBuffer, int index, int length) {
+  static Tuple2<String, int> getUrlFromQname(Uint8List srcBuffer, int index, int length) {
     var outBuffer = StringBuffer();
     if (length > srcBuffer.length) {
       length = srcBuffer.length;
@@ -59,7 +59,7 @@ class DNSName {
       } else if ((0xC0 & nameLength) == 0xC0) {
         // compression
         var v = srcBuffer[++i];
-        var r = qnameToUrl(srcBuffer, v, length);
+        var r = getUrlFromQname(srcBuffer, v, length);
         if (outBuffer.length > 0) {
           outBuffer.write('.');
         }
@@ -85,7 +85,7 @@ class DNSName {
     var index = 0;
     var qnames = <String>[];
     for (var c = 0; c < count; c++) {
-      var r = qnameToUrl(srcBuffer, index, length);
+      var r = getUrlFromQname(srcBuffer, index, length);
       qnames.add(r.item1);
       index += r.item2;
       if (index < srcBuffer.length && srcBuffer[index] == 0x00) {
