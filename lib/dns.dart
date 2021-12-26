@@ -7,6 +7,14 @@ export 'src/question.dart';
 export 'src/record.dart';
 export 'src/name.dart';
 
+class DNSMessage {
+  DNSHeader header;
+  List<DNSQuestion> question;
+  List<DNSRecord> answer;
+  List<DNSRecord> authority;
+  List<DNSRecord> additional;
+}
+
 class DNS {
   static final int OPCODE_QUERY = 0;
   static final int OPCPDE_IQUERY = 1;
@@ -41,9 +49,23 @@ class DNS {
   static final int QCLASS_CH = 3; // the CHAOS class
   static final int QCLASS_HS = 4; // Hesiod [Dyer 87]
 
-  DNSBuffer generateAMessage(String host, [int id = 0x1234]) {
+  static DNSBuffer generateAMessage(String host, [int id = 0x1234]) {
     var headerBuffer = (DNSHeader()..id = id).generateBuffer();
     var questionBuffer = (DNSQuestion()..qName = host).generateBuffer();
     return DNSBuffer.combine([headerBuffer, questionBuffer]);
+  }
+
+  static DNSMessage parseMessage(DNSBuffer dnsBuffer) {
+    var header = DNSHeader.decode(dnsBuffer);
+    var questionInfo = DNSQuestion.decode(dnsBuffer, DNSHeader.BUFFER_SIZE, header.qdcount);
+    var answerInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2, header.ancount);
+    var authorityInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + answerInfo.item2, header.nscount);
+    var additionalInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + answerInfo.item2 + authorityInfo.item2, header.arcount);
+    return DNSMessage() //
+      ..header = header
+      ..question = questionInfo.item1 ?? []
+      ..answer = answerInfo.item1 ?? []
+      ..authority = authorityInfo.item1 ?? []
+      ..additional = additionalInfo.item1 ?? [];
   }
 }

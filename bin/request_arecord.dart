@@ -7,7 +7,7 @@ main(List<String> argv) async {
   if (argv.isNotEmpty) {
     domain = argv[0];
   }
-  var requestBuffer = DNS().generateAMessage(domain);
+  var requestBuffer = DNS.generateAMessage(domain);
   var requestQuery = requestBuffer.toBase64().replaceAll('=', '');
   print('; Request query');
   print(';; $requestQuery');
@@ -27,24 +27,20 @@ main(List<String> argv) async {
   print(';; body as text: ${utf8.decode(responseBuffer, allowMalformed: true)}');
   print(';; -- ');
 
-  var header = DNSHeader.decode(dnsBuffer);
-  var questionInfo = DNSQuestion.decode(dnsBuffer, DNSHeader.BUFFER_SIZE, header.qdcount);
-  var answerInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2, header.ancount);
-  var authorityInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + answerInfo.item2, header.nscount);
-  var additionalInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + answerInfo.item2 + authorityInfo.item2, header.arcount);
+  var message = DNS.parseMessage(dnsBuffer);
 
-  if (header.qdcount > 0) {
+  if (message.header.qdcount > 0) {
     print('; Questions');
-    for (var question in questionInfo.item1) {
+    for (var question in message.question) {
       print(';; qName: ${question.qName}');
       print(';; qClass: ${question.qClass}');
       print(';; qType: ${question.qType}');
       print(';; -- ');
     }
   }
-  if (header.ancount > 0) {
+  if (message.header.ancount > 0) {
     print('; Answer');
-    for (var record in answerInfo.item1) {
+    for (var record in message.answer) {
       print(';; name: ${record.name}');
       print(';; type: ${record.type}');
       print(';; class: ${record.clazz}');
@@ -56,9 +52,9 @@ main(List<String> argv) async {
     }
   }
 
-  if (header.nscount > 0) {
+  if (message.header.nscount > 0) {
     print('; Authority');
-    for (var record in authorityInfo.item1) {
+    for (var record in message.authority) {
       print(';; name: ${record.name}');
       print(';; type: ${record.type}');
       print(';; class: ${record.clazz}');
@@ -70,9 +66,9 @@ main(List<String> argv) async {
     }
   }
 
-  if (header.arcount > 0) {
+  if (message.header.arcount > 0) {
     print('; Additional');
-    for (var record in additionalInfo.item1) {
+    for (var record in message.additional) {
       print(';; name: ${record.name}');
       print(';; type: ${record.type}');
       print(';; class: ${record.clazz}');
