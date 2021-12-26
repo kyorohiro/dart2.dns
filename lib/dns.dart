@@ -10,7 +10,7 @@ export 'src/question.dart';
 export 'src/record.dart';
 
 class DNSName {
-  static Uint8List urlToQname(String url) {
+  static Uint8List createQnameFromUrl(String url) {
     var urlBytes = ascii.encode(url);
     var buffer = List<int>.empty(growable: true);
     var tmp = List<int>.empty(growable: true);

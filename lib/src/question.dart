@@ -14,7 +14,7 @@ class DNSQuestion {
   }
 
   static DNSBuffer encode(DNSQuestion q) {
-    var qnameBuffer = DNSName.urlToQname(q.qName);
+    var qnameBuffer = DNSName.createQnameFromUrl(q.qName);
     var buffer = DNSBuffer(qnameBuffer.length + 2 + 2);
     buffer.setBytes(0, qnameBuffer);
     buffer.setInt16AtBE(qnameBuffer.length, q.qType);
