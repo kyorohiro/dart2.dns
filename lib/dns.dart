@@ -1,6 +1,6 @@
 library dart2;
 
-import 'package:dart2.dns/dns.dart';
+import 'package:info.kyorohiro.dns/dns.dart';
 export 'src/header.dart';
 export 'src/buffer.dart';
 export 'src/question.dart';

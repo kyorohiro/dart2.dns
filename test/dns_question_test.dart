@@ -1,4 +1,4 @@
-import 'package:dart2.dns/dns.dart';
+import 'package:info.kyorohiro.dns/dns.dart';
 import 'package:test/test.dart';
 import 'dart:typed_data' show Uint8List;
 

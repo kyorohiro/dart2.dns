@@ -1,6 +1,6 @@
 import 'dart:typed_data' show Buffer;
 import 'dart:convert' show ascii;
-import 'package:dart2.dns/dns.dart';
+import 'package:info.kyorohiro.dns/dns.dart';
 import 'dart:typed_data' show Uint8List;
 
 String toHex(Uint8List buffer) {

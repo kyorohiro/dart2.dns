@@ -1,5 +1,5 @@
 import 'dart:io' as io;
-import 'package:dart2.dns/dns.dart';
+import 'package:info.kyorohiro.dns/dns.dart';
 
 main(List<String> argv) async {
   print("hello!! ${argv}");

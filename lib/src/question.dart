@@ -1,4 +1,4 @@
-import 'package:dart2.dns/dns.dart';
+import 'package:info.kyorohiro.dns/dns.dart';
 import 'package:tuple/tuple.dart' show Tuple2;
 
 ///

@@ -1,6 +1,6 @@
 library dart2;
 
-import 'package:dart2.dns/dns.dart';
+import 'package:info.kyorohiro.dns/dns.dart';
 import 'dart:math' show Random;
 
 class DNSHeader {
