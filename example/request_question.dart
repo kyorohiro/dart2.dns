@@ -47,6 +47,5 @@ void main() {
 
   setInt16AtBE(buffer, length - 4, 0x01);
   setInt16AtBE(buffer, length - 2, 0x01);
-  print(toHex(buffer));
+  print(toHex(buffer)); // 0667697468756203636f6d0000010001
 }
-//007b0100000100000000000005716969746103636f6d0000010001
