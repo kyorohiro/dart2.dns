@@ -25,10 +25,10 @@ main(List<String> argv) async {
   print(utf8.decode(responseBuffer, allowMalformed: true));
 
   var header = DNSHeader.decode(dnsBuffer);
+  var questionInfo = DNSQuestion.decode(dnsBuffer, DNSHeader.BUFFER_SIZE, header.qdcount);
+  var anRecordInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2, header.ancount);
+  var nsRecordInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + anRecordInfo.item2, header.nscount);
+  var arRecordInfo = DNSRecord.decode(dnsBuffer, DNSHeader.BUFFER_SIZE + questionInfo.item2 + anRecordInfo.item2 + nsRecordInfo.item2, header.arcount);
 
-  //var buffer = DNS().generateAMessage("github.com");
-  //print(buffer.toBase64());
-  //var buffer = Buffer.fromHexString('0034818000010001000000000667697468756203636f6d0000010001c00c000100010000003c00043445ba2c');
-  //var header = DNSHeader.decode(buffer);
-  //var question = DNSQuestion.decode(buffer.subBuffer(12, -1), 0, header.qdcount);
+  
 }
