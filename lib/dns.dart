@@ -6,6 +6,7 @@ export 'src/buffer.dart';
 export 'src/question.dart';
 export 'src/record.dart';
 export 'src/name.dart';
+export 'src/dict.dart';
 
 class DNSMessage {
   DNSHeader header;
