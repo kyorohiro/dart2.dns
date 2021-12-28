@@ -29,7 +29,7 @@ class DNSName {
         return Tuple2<String, int>(outBuffer.toString(), i - index);
       } else if ((0xC0 & nameLength) == 0xC0) {
         // Compression
-        var v = srcBuffer[++i];
+        var v = ((nameLength & 0x3f) << 8) | srcBuffer[++i];
         var r = createUrlFromName(srcBuffer, v);
         if (outBuffer.length > 0) {
           outBuffer.write('.');
