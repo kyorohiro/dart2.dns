@@ -24,11 +24,11 @@ class DNSName {
     for (; i < srcBuffer.length;) {
       var nameLength = srcBuffer[i];
       if (nameLength == 0) {
-        // if Null(0) is TEXT END
+        // TEXT END
         i++;
         return Tuple2<String, int>(outBuffer.toString(), i - index);
       } else if ((0xC0 & nameLength) == 0xC0) {
-        // compression
+        // Compression
         var v = srcBuffer[++i];
         var r = createUrlFromName(srcBuffer, v);
         if (outBuffer.length > 0) {
@@ -46,6 +46,11 @@ class DNSName {
         i = i + 1 + nameLength;
       }
     }
-    throw "Not Found Null Char";
+    throw DNSNameException('Not Found Null Char');
   }
+}
+
+class DNSNameException implements Exception {
+  String cause;
+  DNSNameException(this.cause);
 }

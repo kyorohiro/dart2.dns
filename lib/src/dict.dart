@@ -23,7 +23,7 @@ class DNSCompressionDict {
         index += items[i].length + 1;
       }
     }
-    if (buffer.length != 0) {
+    if (buffer.isNotEmpty) {
       buffer.add(0);
     }
     return Uint8List.fromList(buffer);
