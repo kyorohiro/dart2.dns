@@ -13,7 +13,7 @@ class DNSRecord {
     var records = <DNSRecord>[];
     for (var i = 0; i < count; i++) {
       var record = DNSRecord();
-      var name = DNSName.getUrlFromQname(buffer.raw, indexTmp, buffer.raw.length);
+      var name = DNSName.createUrlFromName(buffer.raw, indexTmp, buffer.raw.length);
       record.name = name.item1;
       record.type = buffer.getInt16AtBE(indexTmp + name.item2);
       record.clazz = buffer.getInt16AtBE(indexTmp + name.item2 + 2);

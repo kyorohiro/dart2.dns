@@ -1,43 +1,25 @@
 import 'dart:convert' show ascii;
 import 'dart:typed_data' show Uint8List;
+import 'package:info.kyorohiro.dns/src/dict.dart';
 import 'package:tuple/tuple.dart' show Tuple2;
+import 'package:info.kyorohiro.dns/dns.dart' show DNSCompressionDict;
 
 class DNSName {
-  static Uint8List createQnameFromUrl(String url) {
-    var urlBytes = ascii.encode(url);
-    var buffer = List<int>.empty(growable: true);
-    var tmp = List<int>.empty(growable: true);
-    var tmpIndex = 0;
-    //urlBytes.forEach((c)
-    var tmpToBuffer = () {
-      if (tmp.isNotEmpty) {
-        buffer.add(tmpIndex);
-        buffer.addAll(tmp.sublist(0, tmpIndex));
-        tmpIndex = 0;
-        tmp.clear();
-      }
-    };
-    for (var i = 0; i < urlBytes.length; i++) {
-      var c = urlBytes[i];
-      if (0x2E == c) {
-        tmpToBuffer();
-        continue;
-      } else {
-        tmp.add(c);
-        tmpIndex++;
-      }
-    }
-    tmpToBuffer();
-    buffer.add(0);
-    return Uint8List.fromList(buffer);
+  ///
+  /// create QName Buffer from url
+  ///
+  static Uint8List createNameFromUrl(String url, {DNSCompressionDict dict, int index = 0}) {
+    dict ??= DNSCompressionDict();
+    return dict.add(url, 0);
   }
 
   ///
+  /// create url string from qname buffer.
   ///
-  /// ret
+  /// return values
   ///   string item is url
   ///   int item is length with Null(0)
-  static Tuple2<String, int> getUrlFromQname(Uint8List srcBuffer, int index, int length) {
+  static Tuple2<String, int> createUrlFromName(Uint8List srcBuffer, int index, int length) {
     var outBuffer = StringBuffer();
     if (length > srcBuffer.length) {
       length = srcBuffer.length;
@@ -52,7 +34,7 @@ class DNSName {
       } else if ((0xC0 & nameLength) == 0xC0) {
         // compression
         var v = srcBuffer[++i];
-        var r = getUrlFromQname(srcBuffer, v, length);
+        var r = createUrlFromName(srcBuffer, v, length);
         if (outBuffer.length > 0) {
           outBuffer.write('.');
         }
