@@ -12,7 +12,6 @@ class DNSCompressionDict {
     var buffer = <int>[];
     for (var i = 0; i < items.length; i++) {
       var key = items.sublist(i).join('.');
-      print(key);
       if (dict.containsKey(key)) {
         var tmp = dict[key].index | 0xC000;
         buffer.addAll([(tmp >> 8) & 0xFF, tmp & 0xFF]);
