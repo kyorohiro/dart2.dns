@@ -27,7 +27,7 @@ class DNSQuestion {
     var indexTmp = index;
     for (var i = 0; i < count; i++) {
       var question = DNSQuestion();
-      var url = DNSName.createUrlFromName(buffer.raw, indexTmp, buffer.raw.length);
+      var url = DNSName.createUrlFromName(buffer.raw, indexTmp);
       question.qName = url.item1;
       question.qType = buffer.getInt16AtBE(indexTmp + url.item2);
       question.qClass = buffer.getInt16AtBE(indexTmp + url.item2 + 2);

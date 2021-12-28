@@ -15,35 +15,28 @@ class DNSName {
 
   ///
   /// create url string from qname buffer.
-  ///
   /// return values
   ///   string item is url
   ///   int item is length with Null(0)
-  static Tuple2<String, int> createUrlFromName(Uint8List srcBuffer, int index, int length) {
+  static Tuple2<String, int> createUrlFromName(Uint8List srcBuffer, int index) {
     var outBuffer = StringBuffer();
-    if (length > srcBuffer.length) {
-      length = srcBuffer.length;
-    }
     var i = index;
-    for (; i < length;) {
+    for (; i < srcBuffer.length;) {
       var nameLength = srcBuffer[i];
       if (nameLength == 0) {
         // if Null(0) is TEXT END
         i++;
-        break;
+        return Tuple2<String, int>(outBuffer.toString(), i - index);
       } else if ((0xC0 & nameLength) == 0xC0) {
         // compression
         var v = srcBuffer[++i];
-        var r = createUrlFromName(srcBuffer, v, length);
+        var r = createUrlFromName(srcBuffer, v);
         if (outBuffer.length > 0) {
           outBuffer.write('.');
         }
         outBuffer.write(r.item1);
         i++;
-        break;
-      } else if (i + 1 + nameLength > length) {
-        // anything wrong , return empty string
-        throw Exception('>> [${i}] Wrong i+nameLength > length := ${i + 1 + nameLength} > $length');
+        return Tuple2<String, int>(outBuffer.toString(), i - index);
       } else {
         var nameBytes = srcBuffer.sublist(i + 1, i + 1 + nameLength);
         if (outBuffer.length > 0) {
@@ -53,6 +46,6 @@ class DNSName {
         i = i + 1 + nameLength;
       }
     }
-    return Tuple2<String, int>(outBuffer.toString(), i - index);
+    throw "Not Found Null Char";
   }
 }
